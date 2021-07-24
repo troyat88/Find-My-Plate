@@ -1,3 +1,9 @@
+var headers = {
+    "x-api-key": "aed4f43f2592fab9bb4d6ac1ad916d57",
+    "x-rapidapi-key": "5e922e6790msh2246e4b31f234a3p150363jsn9bc00953d94a",
+    "x-rapidapi-host": "documenu.p.rapidapi.com"
+};
+
 var formEl = document.querySelector('#user-form');
 //Event handler function for the user's input form.
 var formSubmitHandler = function(event) {
@@ -25,12 +31,7 @@ var formSubmitHandler = function(event) {
         }
 
         //Headers information required by the rapid api.
-        var headers = {
-            "x-api-key": "aed4f43f2592fab9bb4d6ac1ad916d57",
-            "x-rapidapi-key": "5e922e6790msh2246e4b31f234a3p150363jsn9bc00953d94a",
-            "x-rapidapi-host": "documenu.p.rapidapi.com"
-        };
-
+        
         //Fetch the response and parse the data to build the results table
         fetch(requestUrl, {
                 "method": "GET",
@@ -79,6 +80,7 @@ var formSubmitHandler = function(event) {
                     var restaurantPhoneNumber = restaurant.restaurant_phone;
                     var restaurantHours = restaurant.hours;
                     var restaurantWebsite = restaurant.restaurant_website;
+                    var restaurantid = restaurant.restaurant_id;
                     var lat = restaurant.geo.lat;
                     var lng = restaurant.geo.lon;
 
@@ -94,6 +96,10 @@ var formSubmitHandler = function(event) {
                     }
 
                     restaurantDetailEl.append('<button id="view-map" class="w3-round-large">View Map</button>');
+
+                    //Shoe resturant menu
+                    GetMenu(restaurantid)
+                 
 
                     var detailsButtonEl = restaurantDetailEl.children('#view-map');
 
@@ -114,5 +120,61 @@ var formSubmitHandler = function(event) {
     navigator.geolocation.getCurrentPosition(sucessCallback);
 }
 
+//get menu API
+var GetMenu = function (restaurantid) {
+    var requestUrl = "https://api.documenu.com/v2/restaurant/" + restaurantid + "/menuitems";
+    fetch(requestUrl, {
+        "method": "GET",
+        "headers": headers
+    })
+        .then(response => {
+            return response.json();
+        }).then(data => {
+            console.log(data.data)
+            ShowMenu(data.data)
+        })
+        .catch(err => {
+            console.error(err);
+        });
+}
+
+//Show Menu
+var ShowMenu = function (menu) {
+    //get element
+    var menuheaderEl = $('#menu-header')
+    var menuEl = $('#menuitem-details')
+
+    //clear menu data before update new data
+    menuEl.empty();
+    menuheaderEl.empty();
+
+    //add menu item table header
+    var headerRowEl = $('<tr>');
+    var headeritemnameTdEl = $('<th>').text("Menu item");
+    var headeritempriceTdEl = $('<th>').text("Price");
+    var headeritemdescTdEl = $('<th>').text("Description");
+    headerRowEl.append(
+        headeritemnameTdEl,
+        headeritempriceTdEl,
+        headeritemdescTdEl
+    );
+    menuheaderEl.append(headerRowEl);
+
+    //add menu items
+    for (var i = 0; i < menu.length; i++) {
+        var menuRowEl = $('<tr>').addClass('menu-row');
+        menuRowEl.attr('menuIndex', i);
+        var itemnameTdEl = $('<td>').text(menu[i].menu_item_name);
+        var itempriceTdEl = $('<td>').text(menu[i].menu_item_price);
+        var itemdescTdEl = $('<td>').text(menu[i].menu_item_description);
+        menuRowEl.append(
+            itemnameTdEl,
+            itempriceTdEl,
+            itemdescTdEl
+        );
+        menuEl.append(menuRowEl);
+    }
+}
+    
 //Add event listener on the user's form.
 formEl.addEventListener('submit', formSubmitHandler);
