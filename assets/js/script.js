@@ -57,28 +57,44 @@ const GetRestaurants = requestUrl => {
 //Show restaurant info
 const ShowRestaurantInfo = restaurants => {
     var restaurantDisplayEl = $('#restaurant-display');
+    var restaurantHeaderEl = $('#restaurant-header');
     var restaurantDetailsEl = $('#restaurant-details')
     restaurantDisplayEl.empty();
+    restaurantHeaderEl.empty();
     restaurantDetailsEl.empty();
 
-    for (var i = 0; i < restaurants.length; i++) {
-        var restaurantRowEl = $('<tr>').addClass('restaurant-row');
-        restaurantRowEl.attr('restaurantIndex', i);
-        var restaurantNameTdEl = $('<td>').text(restaurants[i].restaurant_name);
-        var restaurantAddressTdEl = $('<td>').text(restaurants[i].address.formatted);
-        var restaurantPhoneTdEl = $('<td>').text(restaurants[i].restaurant_phone);
-        restaurantRowEl.append(
-            restaurantNameTdEl,
-            restaurantAddressTdEl,
-            restaurantPhoneTdEl
+    if (restaurants.length > 0) {
+        //add menu item table header
+        var restaurantHeaderRowEl = $('<tr>');
+        var restaurantNamHeaderEl = $('<th>').text("Name");
+        var restaurantAddressHeaderEl = $('<th>').text("Address");
+        var restaurantPhoneNumberHeaderEl = $('<th>').text("Phone Number");
+        restaurantHeaderRowEl.append(
+            restaurantNamHeaderEl,
+            restaurantAddressHeaderEl,
+            restaurantPhoneNumberHeaderEl
         );
-        restaurantDisplayEl.append(restaurantRowEl);
-    }
+        restaurantHeaderEl.append(restaurantHeaderRowEl);
 
-    restaurantDisplayEl.on('click', '.restaurant-row', event => {
-        var restaurantIndex = event.currentTarget.attributes['restaurantIndex'].value;
-        restaurantClickHandler(restaurants[restaurantIndex]);
-    });
+        for (var i = 0; i < restaurants.length; i++) {
+            var restaurantRowEl = $('<tr>').addClass('restaurant-row');
+            restaurantRowEl.attr('restaurantIndex', i);
+            var restaurantNameTdEl = $('<td>').text(restaurants[i].restaurant_name);
+            var restaurantAddressTdEl = $('<td>').text(restaurants[i].address.formatted);
+            var restaurantPhoneTdEl = $('<td>').text(restaurants[i].restaurant_phone);
+            restaurantRowEl.append(
+                restaurantNameTdEl,
+                restaurantAddressTdEl,
+                restaurantPhoneTdEl
+            );
+            restaurantDisplayEl.append(restaurantRowEl);
+        }
+
+        restaurantDisplayEl.on('click', '.restaurant-row', event => {
+            var restaurantIndex = event.currentTarget.attributes['restaurantIndex'].value;
+            restaurantClickHandler(restaurants[restaurantIndex]);
+        });
+    }
 }
 
 const restaurantClickHandler = restaurant => {
@@ -146,31 +162,33 @@ const ShowMenu = menu => {
     menuEl.empty();
     menuheaderEl.empty();
 
-    //add menu item table header
-    var headerRowEl = $('<tr>');
-    var headeritemnameTdEl = $('<th>').text("Menu item");
-    var headeritempriceTdEl = $('<th>').text("Price");
-    var headeritemdescTdEl = $('<th>').text("Description");
-    headerRowEl.append(
-        headeritemnameTdEl,
-        headeritempriceTdEl,
-        headeritemdescTdEl
-    );
-    menuheaderEl.append(headerRowEl);
-
-    //add menu items
-    for (var i = 0; i < menu.length; i++) {
-        var menuRowEl = $('<tr>').addClass('menu-row');
-        menuRowEl.attr('menuIndex', i);
-        var itemnameTdEl = $('<td>').text(menu[i].menu_item_name);
-        var itempriceTdEl = $('<td>').text(menu[i].menu_item_price);
-        var itemdescTdEl = $('<td>').text(menu[i].menu_item_description);
-        menuRowEl.append(
-            itemnameTdEl,
-            itempriceTdEl,
-            itemdescTdEl
+    if (menu.length > 0) {
+        //add menu item table header
+        var headerRowEl = $('<tr>');
+        var headeritemnameTdEl = $('<th>').text("Menu item");
+        var headeritempriceTdEl = $('<th>').text("Price");
+        var headeritemdescTdEl = $('<th>').text("Description");
+        headerRowEl.append(
+            headeritemnameTdEl,
+            headeritempriceTdEl,
+            headeritemdescTdEl
         );
-        menuEl.append(menuRowEl);
+        menuheaderEl.append(headerRowEl);
+
+        //add menu items
+        for (var i = 0; i < menu.length; i++) {
+            var menuRowEl = $('<tr>').addClass('menu-row');
+            menuRowEl.attr('menuIndex', i);
+            var itemnameTdEl = $('<td>').text(menu[i].menu_item_name);
+            var itempriceTdEl = $('<td>').text(menu[i].menu_item_price);
+            var itemdescTdEl = $('<td>').text(menu[i].menu_item_description);
+            menuRowEl.append(
+                itemnameTdEl,
+                itempriceTdEl,
+                itemdescTdEl
+            );
+            menuEl.append(menuRowEl);
+        }
     }
 }
 
