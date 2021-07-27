@@ -1,6 +1,6 @@
 //Headers information required by the rapid api.
 const headers = {
-    "x-api-key": "aed4f43f2592fab9bb4d6ac1ad916d57",
+    "x-api-key": "0b686874e0bcbe80f5eabcfc65de520b",
     "x-rapidapi-key": "5e922e6790msh2246e4b31f234a3p150363jsn9bc00953d94a",
     "x-rapidapi-host": "documenu.p.rapidapi.com"
 };
@@ -91,6 +91,12 @@ const ShowRestaurantInfo = restaurants => {
         }
 
         restaurantDisplayEl.on('click', '.restaurant-row', event => {
+            $('.restaurant-row').each(function(a, b) {
+                $(b).click(function() {
+                    $('.restaurant-row').css('background', '#ffffff');
+                    $(this).css('background', '#008080');
+                });
+            });
             var restaurantIndex = event.currentTarget.attributes['restaurantIndex'].value;
             restaurantClickHandler(restaurants[restaurantIndex]);
         });
