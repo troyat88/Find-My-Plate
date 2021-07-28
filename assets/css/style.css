@@ -14,3 +14,7 @@
 .restaurant-row:hover {
     color: teal;
 }
+
+.restaurant-row:active {
+    background-color: teal;
+}

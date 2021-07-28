@@ -13,14 +13,14 @@ function initMap() {
         lng: longitude
     };
 
-    //Get the map around the user's current postion.
+    //Get the map around the restaurant location.
     var map = new google.maps.Map(document.getElementById("map"), {
         center: restaurantPosition,
         zoom: 16,
         mapId: '6dbf17a103bba713'
     });
 
-    //Put the marker indicate the location of the restaurant on the map.
+    //Draw the marker indicate the location of the restaurant on the map.
     new google.maps.Marker({
         position: restaurantPosition,
         map,

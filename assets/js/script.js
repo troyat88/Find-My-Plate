@@ -1,6 +1,6 @@
 //Headers information required by the rapid api.
 const headers = {
-    "x-api-key": "0b686874e0bcbe80f5eabcfc65de520b",
+    "x-api-key": "fe0fb5c184930ab4f826100794fa6cd3",
     "x-rapidapi-key": "5e922e6790msh2246e4b31f234a3p150363jsn9bc00953d94a",
     "x-rapidapi-host": "documenu.p.rapidapi.com"
 };
@@ -10,11 +10,13 @@ const formEl = document.querySelector('#user-form');
 //Event handler function for the user's input form.
 const formSubmitHandler = event => {
     event.preventDefault();
+
     $('#menu-details').hide();
 
     //First we get the latitude and longitude for the user's location
     const sucessCallback = position => {
 
+        console.log(position);
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
         var cuisine = document.querySelector('#cuisine').value;
@@ -131,7 +133,7 @@ const restaurantClickHandler = restaurant => {
 
     restaurantDetailEl.append('<button id="view-map" class="w3-round-large">View Map</button>');
 
-    //Shoe resturant menu
+    //Show restaurant menu
     GetMenu(restaurantid)
 
     var detailsButtonEl = restaurantDetailEl.children('#view-map');
@@ -162,16 +164,22 @@ const GetMenu = restaurantid => {
 
 //Show Menu
 const ShowMenu = menu => {
-    //get element  
-    var menuheaderEl = $('#menu-header')
-    var menuEl = $('#menuitem-details')
-
-    //clear menu data before update new data
-    menuheaderEl.empty();
-    menuEl.empty();
-    $('#menu-details-tbl').DataTable().rows().clear().draw();
+    //to prevent odd behavior with table, we need to destroy existing table here. 
+    if ($.fn.dataTable.isDataTable('#menu-details-tbl')) {
+        $('#menu-details-tbl').dataTable().fnClearTable();
+        $('#menu-details-tbl').dataTable().fnDraw();
+        $('#menu-details-tbl').dataTable().fnDestroy();
+    };
 
     if (menu.length > 0) {
+        //get menu table header and table row parent elements  
+        var menuheaderEl = $('#menu-header')
+        var menuEl = $('#menuitem-details')
+
+        //clear menu data before update new data
+        menuheaderEl.empty();
+        menuEl.empty();
+
         //add menu item table header
         var headerRowEl = $('<tr>');
         var headeritemnameTdEl = $('<th>').text("Menu item");
@@ -198,13 +206,12 @@ const ShowMenu = menu => {
             );
             menuEl.append(menuRowEl);
         }
-        $(document).ready(function() {
-            $('#menu-details-tbl').DataTable();
-        });
 
-        $('#menu-details').show();
-    } else {
-        $('#menu-details').hide();
+        $(document).ready(function() {
+            if (!$.fn.dataTable.isDataTable('#menu-details-tbl')) {
+                $('#menu-details-tbl').DataTable();
+            }
+        });
     }
 }
 
