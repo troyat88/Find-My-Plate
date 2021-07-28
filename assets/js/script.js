@@ -1,22 +1,46 @@
 //Headers information required by the rapid api.
 const headers = {
-    "x-api-key": "fe0fb5c184930ab4f826100794fa6cd3",
+    "x-api-key": "ecbb272f2d3d1f28bee423fe41a39a8d",
     "x-rapidapi-key": "5e922e6790msh2246e4b31f234a3p150363jsn9bc00953d94a",
     "x-rapidapi-host": "documenu.p.rapidapi.com"
 };
 
+//Select place holder elements.
 const formEl = document.querySelector('#user-form');
+var restaurantDisplayEl = $('#restaurant-display');
+var restaurantHeaderEl = $('#restaurant-header');
+var restaurantDetailsEl = $('#restaurant-details')
+var menuheaderEl = $('#menu-header')
+var menuEl = $('#menuitem-details')
+
+//Function to reset the RestaurantInfo table.
+const ResetRestaurantInfo = () => {
+    restaurantDisplayEl.empty();
+    restaurantHeaderEl.empty();
+}
+
+//Function to reset the restaurant details section.
+const ResetRestaurantDetailsSection = () => {
+    restaurantDetailsEl.empty();
+}
+
+//Function to reset the menu items table.
+const ResetMenuItemsTable = () => {
+    menuheaderEl.empty();
+    menuEl.empty();
+}
 
 //Event handler function for the user's input form.
 const formSubmitHandler = event => {
     event.preventDefault();
 
-    $('#menu-details').hide();
+    //Clear restaurant data.
+    ResetRestaurantInfo();
+    ResetRestaurantDetailsSection();
+    ResetMenuItemsTable();
 
     //First we get the latitude and longitude for the user's location
     const sucessCallback = position => {
-
-        console.log(position);
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
         var cuisine = document.querySelector('#cuisine').value;
@@ -41,7 +65,7 @@ const formSubmitHandler = event => {
     navigator.geolocation.getCurrentPosition(sucessCallback);
 }
 
-//Get list of restaurants from restaurant API.
+//Get list of restaurants from restaurant API then show them.
 const GetRestaurants = requestUrl => {
     fetch(requestUrl, {
             "method": "GET",
@@ -61,12 +85,8 @@ const GetRestaurants = requestUrl => {
 
 //Show restaurant info
 const ShowRestaurantInfo = restaurants => {
-    var restaurantDisplayEl = $('#restaurant-display');
-    var restaurantHeaderEl = $('#restaurant-header');
-    var restaurantDetailsEl = $('#restaurant-details')
-    restaurantDisplayEl.empty();
-    restaurantHeaderEl.empty();
-    restaurantDetailsEl.empty();
+    ResetRestaurantInfo();
+    $('#menu-details').hide();
 
     if (restaurants.length > 0) {
         //add menu item table header
@@ -81,6 +101,7 @@ const ShowRestaurantInfo = restaurants => {
         );
         restaurantHeaderEl.append(restaurantHeaderRowEl);
 
+        //Add each restaurant found in search to the table
         for (var i = 0; i < restaurants.length; i++) {
             var restaurantRowEl = $('<tr>').addClass('restaurant-row');
             restaurantRowEl.attr('restaurantIndex', i);
@@ -95,6 +116,7 @@ const ShowRestaurantInfo = restaurants => {
             restaurantDisplayEl.append(restaurantRowEl);
         }
 
+        //Add event listener when user clicks on a restaurant row
         restaurantDisplayEl.on('click', '.restaurant-row', event => {
             $('.restaurant-row').each((a, b) => {
                 $(b).click(function() {
@@ -108,9 +130,10 @@ const ShowRestaurantInfo = restaurants => {
     }
 }
 
+//Restaurant onclick event handler.
 const restaurantClickHandler = restaurant => {
-    var restaurantDetailEl = $('#restaurant-details');
-    restaurantDetailEl.empty();
+    ResetRestaurantDetailsSection();
+
     var restaurantName = restaurant.restaurant_name;
     var restaurantAddress = restaurant.address.formatted;
     var restaurantPhoneNumber = restaurant.restaurant_phone;
@@ -120,23 +143,23 @@ const restaurantClickHandler = restaurant => {
     var lat = restaurant.geo.lat;
     var lng = restaurant.geo.lon;
 
-    restaurantDetailEl.append(`<p>Name: ${restaurantName}</p>`);
-    restaurantDetailEl.append(`<p>Address: ${restaurantAddress}</p>`);
-    restaurantDetailEl.append(`<p>Phone: ${restaurantPhoneNumber}</p>`);
+    restaurantDetailsEl.append(`<p>Name: ${restaurantName}</p>`);
+    restaurantDetailsEl.append(`<p>Address: ${restaurantAddress}</p>`);
+    restaurantDetailsEl.append(`<p>Phone: ${restaurantPhoneNumber}</p>`);
     if (restaurantHours) {
-        restaurantDetailEl.append(`<p>Hours: ${restaurantHours}</p>`);
+        restaurantDetailsEl.append(`<p>Hours: ${restaurantHours}</p>`);
     }
 
     if (restaurantWebsite) {
-        restaurantDetailEl.append(`<p>Website: <a href="${restaurantWebsite}" target="_blank">${restaurantWebsite}</a></p>`);
+        restaurantDetailsEl.append(`<p>Website: <a href="${restaurantWebsite}" target="_blank">${restaurantWebsite}</a></p>`);
     }
 
-    restaurantDetailEl.append('<button id="view-map" class="w3-round-large">View Map</button>');
+    restaurantDetailsEl.append('<button id="view-map" class="w3-round-large">View Map</button>');
 
     //Show restaurant menu
     GetMenu(restaurantid)
 
-    var detailsButtonEl = restaurantDetailEl.children('#view-map');
+    var detailsButtonEl = restaurantDetailsEl.children('#view-map');
 
     //Open the map and show restaurant location with marker on Google map using Google map api if user click on "View Map" button.
     detailsButtonEl.on('click', event => {
@@ -164,22 +187,23 @@ const GetMenu = restaurantid => {
 
 //Show Menu
 const ShowMenu = menu => {
+    ResetMenuItemsTable();
+    $('#menu-details').show();
+
     //to prevent odd behavior with table, we need to destroy existing table here. 
     if ($.fn.dataTable.isDataTable('#menu-details-tbl')) {
         $('#menu-details-tbl').dataTable().fnClearTable();
         $('#menu-details-tbl').dataTable().fnDraw();
-        $('#menu-details-tbl').dataTable().fnDestroy();
+    } else {
+        //Make the menu items table a JQuery dataTable.
+        $(document).ready(function() {
+            if (!$.fn.dataTable.isDataTable('#menu-details-tbl')) {
+                $('#menu-details-tbl').DataTable();
+            }
+        });
     };
 
     if (menu.length > 0) {
-        //get menu table header and table row parent elements  
-        var menuheaderEl = $('#menu-header')
-        var menuEl = $('#menuitem-details')
-
-        //clear menu data before update new data
-        menuheaderEl.empty();
-        menuEl.empty();
-
         //add menu item table header
         var headerRowEl = $('<tr>');
         var headeritemnameTdEl = $('<th>').text("Menu item");
@@ -206,12 +230,6 @@ const ShowMenu = menu => {
             );
             menuEl.append(menuRowEl);
         }
-
-        $(document).ready(function() {
-            if (!$.fn.dataTable.isDataTable('#menu-details-tbl')) {
-                $('#menu-details-tbl').DataTable();
-            }
-        });
     }
 }
 
