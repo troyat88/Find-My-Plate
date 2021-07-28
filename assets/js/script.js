@@ -1,6 +1,6 @@
 //Headers information required by the rapid api.
 const headers = {
-    "x-api-key": "aed4f43f2592fab9bb4d6ac1ad916d57",
+    "x-api-key": "0b686874e0bcbe80f5eabcfc65de520b",
     "x-rapidapi-key": "5e922e6790msh2246e4b31f234a3p150363jsn9bc00953d94a",
     "x-rapidapi-host": "documenu.p.rapidapi.com"
 };
@@ -10,6 +10,7 @@ const formEl = document.querySelector('#user-form');
 //Event handler function for the user's input form.
 const formSubmitHandler = event => {
     event.preventDefault();
+    $('#menu-details').hide();
 
     //First we get the latitude and longitude for the user's location
     const sucessCallback = position => {
@@ -47,7 +48,9 @@ const GetRestaurants = requestUrl => {
         .then(response => {
             return response.json();
         }).then(data => {
-            ShowRestaurantInfo(data.data);
+            if (data.data.length > 0) {
+                ShowRestaurantInfo(data.data);
+            }
         })
         .catch(err => {
             console.error(err);
@@ -91,6 +94,12 @@ const ShowRestaurantInfo = restaurants => {
         }
 
         restaurantDisplayEl.on('click', '.restaurant-row', event => {
+            $('.restaurant-row').each((a, b) => {
+                $(b).click(function() {
+                    $('.restaurant-row').css('background', '#ffffff');
+                    $(this).css('background', '#008080');
+                });
+            });
             var restaurantIndex = event.currentTarget.attributes['restaurantIndex'].value;
             restaurantClickHandler(restaurants[restaurantIndex]);
         });
@@ -144,8 +153,7 @@ const GetMenu = restaurantid => {
         .then(response => {
             return response.json();
         }).then(data => {
-            console.log(data.data)
-            ShowMenu(data.data)
+            ShowMenu(data.data);
         })
         .catch(err => {
             console.error(err);
@@ -154,13 +162,14 @@ const GetMenu = restaurantid => {
 
 //Show Menu
 const ShowMenu = menu => {
-    //get element
+    //get element  
     var menuheaderEl = $('#menu-header')
     var menuEl = $('#menuitem-details')
 
     //clear menu data before update new data
-    menuEl.empty();
     menuheaderEl.empty();
+    menuEl.empty();
+    $('#menu-details-tbl').DataTable().rows().clear().draw();
 
     if (menu.length > 0) {
         //add menu item table header
@@ -189,6 +198,13 @@ const ShowMenu = menu => {
             );
             menuEl.append(menuRowEl);
         }
+        $(document).ready(function() {
+            $('#menu-details-tbl').DataTable();
+        });
+
+        $('#menu-details').show();
+    } else {
+        $('#menu-details').hide();
     }
 }
 
