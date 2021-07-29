@@ -13,6 +13,19 @@ var restaurantDetailsEl = $('#restaurant-details')
 var menuheaderEl = $('#menu-header')
 var menuEl = $('#menuitem-details')
 
+var userCurrentPosition = {
+    lat: 0,
+    lng: 0
+}
+
+const setUserCurrentPosition = position => {
+    userCurrentPosition.lat = position.coords.latitude;
+    userCurrentPosition.lng = position.coords.longitude;
+}
+
+//First we get the latitude and longitude for the user's location
+navigator.geolocation.getCurrentPosition(setUserCurrentPosition);
+
 //Function to reset the RestaurantInfo table.
 const ResetRestaurantInfo = () => {
     restaurantDisplayEl.empty();
@@ -28,6 +41,7 @@ const ResetRestaurantDetailsSection = () => {
 const ResetMenuItemsTable = () => {
     menuheaderEl.empty();
     menuEl.empty();
+    $('#menu-details').hide();
 }
 
 //Event handler function for the user's input form.
@@ -39,30 +53,27 @@ const formSubmitHandler = event => {
     ResetRestaurantDetailsSection();
     ResetMenuItemsTable();
 
-    //First we get the latitude and longitude for the user's location
-    const sucessCallback = position => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        var cuisine = document.querySelector('#cuisine').value;
-        var distance = document.querySelector('#distance').value;
+    console.log(userCurrentPosition);
 
-        //Build the request Url for the rapid restaurant search api.
-        var requestUrl = "https://documenu.p.rapidapi.com/restaurants/search/geo?lat=" + lat + "&lon=" + lng + "&size=10&page=1";
+    const lat = userCurrentPosition.lat;
+    const lng = userCurrentPosition.lng;
+    var cuisine = document.querySelector('#cuisine').value;
+    var distance = document.querySelector('#distance').value;
 
-        //If the user select the distance in the user's form, we filter based on the distance selected.
-        if (distance) {
-            requestUrl = requestUrl + "&distance=" + distance;
-        }
+    //Build the request Url for the rapid restaurant search api.
+    var requestUrl = "https://documenu.p.rapidapi.com/restaurants/search/geo?lat=" + lat + "&lon=" + lng + "&size=10&page=1";
 
-        //If the user entered the cuisine we filtler based on the cuisine entered.
-        if (cuisine) {
-            requestUrl = requestUrl + "&cuisine=" + cuisine;
-        }
-
-        GetRestaurants(requestUrl);
+    //If the user select the distance in the user's form, we filter based on the distance selected.
+    if (distance) {
+        requestUrl = requestUrl + "&distance=" + distance;
     }
 
-    navigator.geolocation.getCurrentPosition(sucessCallback);
+    //If the user entered the cuisine we filtler based on the cuisine entered.
+    if (cuisine) {
+        requestUrl = requestUrl + "&cuisine=" + cuisine;
+    }
+
+    GetRestaurants(requestUrl);
 }
 
 //Get list of restaurants from restaurant API then show them.
@@ -74,9 +85,7 @@ const GetRestaurants = requestUrl => {
         .then(response => {
             return response.json();
         }).then(data => {
-            if (data.data.length > 0) {
-                ShowRestaurantInfo(data.data);
-            }
+            ShowRestaurantInfo(data.data);
         })
         .catch(err => {
             console.error(err);
@@ -86,7 +95,6 @@ const GetRestaurants = requestUrl => {
 //Show restaurant info
 const ShowRestaurantInfo = restaurants => {
     ResetRestaurantInfo();
-    $('#menu-details').hide();
 
     if (restaurants.length > 0) {
         //add menu item table header
@@ -133,6 +141,7 @@ const ShowRestaurantInfo = restaurants => {
 //Restaurant onclick event handler.
 const restaurantClickHandler = restaurant => {
     ResetRestaurantDetailsSection();
+    ResetMenuItemsTable();
 
     var restaurantName = restaurant.restaurant_name;
     var restaurantAddress = restaurant.address.formatted;
@@ -187,23 +196,8 @@ const GetMenu = restaurantid => {
 
 //Show Menu
 const ShowMenu = menu => {
-    ResetMenuItemsTable();
-    $('#menu-details').show();
-
-    //to prevent odd behavior with table, we need to destroy existing table here. 
-    if ($.fn.dataTable.isDataTable('#menu-details-tbl')) {
-        $('#menu-details-tbl').dataTable().fnClearTable();
-        $('#menu-details-tbl').dataTable().fnDraw();
-    } else {
-        //Make the menu items table a JQuery dataTable.
-        $(document).ready(function() {
-            if (!$.fn.dataTable.isDataTable('#menu-details-tbl')) {
-                $('#menu-details-tbl').DataTable();
-            }
-        });
-    };
-
     if (menu.length > 0) {
+        $('#menu-details').show();
         //add menu item table header
         var headerRowEl = $('<tr>');
         var headeritemnameTdEl = $('<th>').text("Menu item");
@@ -230,6 +224,12 @@ const ShowMenu = menu => {
             );
             menuEl.append(menuRowEl);
         }
+        //Make the menu items table a JQuery dataTable.
+        $(document).ready(function() {
+            if (!$.fn.dataTable.isDataTable('#menu-details-tbl')) {
+                $('#menu-details-tbl').DataTable();
+            }
+        });
     }
 }
 
