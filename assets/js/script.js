@@ -1,6 +1,6 @@
 //Headers information required by the rapid api.
 const headers = {
-    "x-api-key": "ecbb272f2d3d1f28bee423fe41a39a8d",
+    "x-api-key": "71bb95b40902a14c2d8b5ab9eee077a7",
     "x-rapidapi-key": "5e922e6790msh2246e4b31f234a3p150363jsn9bc00953d94a",
     "x-rapidapi-host": "documenu.p.rapidapi.com"
 };
