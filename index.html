@@ -22,10 +22,14 @@
 
     <!--search section-->
     <section id="search">
-        <div class="w3-container w3-margin-top">
+        <div class="w3-container w3-pale-yellow">
             <h4>Search by cuisine (italian, chinese, thai etc...)</h4>
             <form id="user-form">
-                <label class="form-label" for="cuisine">Cuisine:</label>
+                <label class="form-label" for="restaurant-name"">Restaurant Name:</label>
+                <input name="restaurant-name" id="restaurant-name" type="text" autofocus="true" class="form-input" />
+                <label class="form-label" for="zip"">Zip Code:</label>
+                <input name="zip" id="zip" type="text" autofocus="true" class="form-input" />
+                 <label class="form-label" for="cuisine">Cuisine:</label>
                 <input name="cuisine" id="cuisine" type="text" autofocus="true" class="form-input" />
                 <label for="distance">Choose distance:</label>
                 <select id="distance" name="distance">
@@ -33,7 +37,7 @@
                     <option value="10">10 miles</option>
                     <option value="15">15 miles</option>
                 </select>
-                <button type="submit" class="btn w3-round-large w3-teal">Get Restaurants</button>
+                <button type="submit" class="btn w3-round-large w3-teal">Search</button>
             </form>
         </div>
     </section>
@@ -41,9 +45,9 @@
     <!--results section-->
     <section dir="results">
         <!--restaurant list-->
-        <div id="search-results" class="w3-container w3-border w3-margin-top w3-cell-row">
+        <div id="search-results" class="w3-container w3-border w3-pale-yellow w3-cell-row">
             <div class="w3-container w3-table w3-half">
-                <table id="restaurant-info-tbl" class="w3-striped">
+                <table id="restaurant-info-tbl">
                     <thead id="restaurant-header">
                     </thead>
                     <tbody id="restaurant-display">
