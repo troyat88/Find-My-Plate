@@ -197,6 +197,7 @@ const GetMenu = restaurantid => {
 //Show Menu
 const ShowMenu = menu => {
     menuEl.empty();
+    menuheaderEl.empty();
     if (menu.length > 0) {
         $('#menu-details').show();
         //add menu item table header
