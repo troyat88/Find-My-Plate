@@ -10,6 +10,7 @@ const formEl = document.querySelector('#user-form');
 var restaurantDisplayEl = $('#restaurant-display');
 var restaurantHeaderEl = $('#restaurant-header');
 var restaurantDetailsEl = $('#restaurant-details')
+var menuDetailsEl = $('#menu-details');
 var menuheaderEl = $('#menu-header')
 var menuEl = $('#menuitem-details')
 var searchby = document.getElementById("searchby");
@@ -37,13 +38,14 @@ const ResetRestaurantInfo = () => {
 //Function to reset the restaurant details section.
 const ResetRestaurantDetailsSection = () => {
     restaurantDetailsEl.empty();
+    restaurantDetailsEl.show();
 }
 
 //Function to reset the menu items table.
 const ResetMenuItemsTable = () => {
     menuheaderEl.empty();
     menuEl.empty();
-    $('#menu-details').hide();
+    menuDetailsEl.hide();
 }
 
 //Event handler function for the user's input form.
@@ -61,12 +63,12 @@ const formSubmitHandler = event => {
     const lng = userCurrentPosition.lng;
     var cuisine = document.querySelector('#cuisine').value;
     var distance = document.querySelector('#distance').value;
-    var restaurant_name = document.querySelector('#restaurant-name').value;
+    var restaurantName = document.querySelector('#restaurant-name').value;
     var zip = document.querySelector('#zip').value;
 
     if (searchby.value === "zipcode") {
         console.log("GetResturantByNameAPI");
-        GetResturantByNameAPI(restaurant_name, zip, cuisine)
+        GetResturantByNameAPI(restaurantName, zip, cuisine)
     } else {
         console.log("GetResturantByGeoAPI");
         GetResturantByGeoAPI(lat, lng, distance, cuisine)
@@ -198,7 +200,7 @@ const ShowMenu = menu => {
     menuEl.empty();
     menuheaderEl.empty();
     if (menu.length > 0) {
-        $('#menu-details').show();
+        menuDetailsEl.show();
         //add menu item table header
         var headerRowEl = $('<tr>');
         var headeritemnameTdEl = $('<th>').text("Menu item");
@@ -231,10 +233,15 @@ const ShowMenu = menu => {
 }
 
 //get resturant by name API
-const GetResturantByNameAPI = (restaurant_name, zip, cuisine) => {
-    var requestUrl = "https://api.documenu.com/v2/restaurants/search/fields?zip_code=" + zip + "&exact=false";
-    if (restaurant_name) { requestUrl += "&restaurant_name=" + restaurant_name; };
-    if (cuisine) { requestUrl = requestUrl + "&cuisine=" + cuisine; };
+const GetResturantByNameAPI = (restaurantName, zip, cuisine) => {
+    var requestUrl = "https://api.documenu.com/v2/restaurants/search/fields?zip_code=" + zip + "&exact=false" + "&size=15&page=1";
+    if (restaurantName) {
+        requestUrl += "&restaurant_name=" + restaurantName;
+    }
+
+    if (cuisine) {
+        requestUrl = requestUrl + "&cuisine=" + cuisine;
+    }
     GetRestaurants(requestUrl);
 };
 
