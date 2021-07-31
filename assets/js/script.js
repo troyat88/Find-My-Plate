@@ -12,6 +12,8 @@ var restaurantHeaderEl = $('#restaurant-header');
 var restaurantDetailsEl = $('#restaurant-details')
 var menuheaderEl = $('#menu-header')
 var menuEl = $('#menuitem-details')
+var searchby = document.getElementById("searchby");
+$("#byzipcode").hide();
 
 var userCurrentPosition = {
     lat: 0,
@@ -47,7 +49,7 @@ const ResetMenuItemsTable = () => {
 //Event handler function for the user's input form.
 const formSubmitHandler = event => {
     event.preventDefault();
- 
+
     //Clear restaurant data.
     ResetRestaurantInfo();
     ResetRestaurantDetailsSection();
@@ -62,13 +64,10 @@ const formSubmitHandler = event => {
     var restaurant_name = document.querySelector('#restaurant-name').value;
     var zip = document.querySelector('#zip').value;
 
-    if (restaurant_name || zip)
-    {
+    if (searchby.value === "zipcode") {
         console.log("GetResturantByNameAPI");
-        GetResturantByNameAPI(restaurant_name, zip, cuisine, lat, lng)
-    }
-    else
-    {
+        GetResturantByNameAPI(restaurant_name, zip, cuisine)
+    } else {
         console.log("GetResturantByGeoAPI");
         GetResturantByGeoAPI(lat, lng, distance, cuisine)
     };
@@ -76,7 +75,7 @@ const formSubmitHandler = event => {
 
 //Get list of restaurants from restaurant API then show them.
 const GetRestaurants = requestUrl => {
-     console.log("GetRestaurants");
+    console.log("GetRestaurants");
     fetch(requestUrl, {
             "method": "GET",
             "headers": headers
@@ -139,7 +138,7 @@ const ShowRestaurantInfo = restaurants => {
 
 //Restaurant onclick event handler.
 const restaurantClickHandler = restaurant => {
-    console.log("restaurantClickHandler",restaurant )
+    console.log("restaurantClickHandler", restaurant)
     ResetRestaurantDetailsSection();
     ResetMenuItemsTable();
 
@@ -163,7 +162,7 @@ const restaurantClickHandler = restaurant => {
         restaurantDetailsEl.append(`<p>Website: <a href="${restaurantWebsite}" target="_blank">${restaurantWebsite}</a></p>`);
     }
 
-    restaurantDetailsEl.append('<button id="view-map" class="w3-round-large">View Map</button>');
+    restaurantDetailsEl.append('<button id="view-map" class="w3-round-large w3-teal">View Map</button>');
 
     //Show restaurant menu
     GetMenu(restaurantid)
@@ -203,11 +202,9 @@ const ShowMenu = menu => {
         var headerRowEl = $('<tr>');
         var headeritemnameTdEl = $('<th>').text("Menu item");
         var headeritempriceTdEl = $('<th>').text("Price");
-        var headeritemdescTdEl = $('<th>').text("Description");
         headerRowEl.append(
             headeritemnameTdEl,
-            headeritempriceTdEl,
-            headeritemdescTdEl
+            headeritempriceTdEl
         );
         menuheaderEl.append(headerRowEl);
 
@@ -217,11 +214,9 @@ const ShowMenu = menu => {
             menuRowEl.attr('menuIndex', i);
             var itemnameTdEl = $('<td>').text(menu[i].menu_item_name);
             var itempriceTdEl = $('<td>').text("$ " + menu[i].menu_item_price);
-            var itemdescTdEl = $('<td>').text(menu[i].menu_item_description);
             menuRowEl.append(
                 itemnameTdEl,
-                itempriceTdEl,
-                itemdescTdEl
+                itempriceTdEl
             );
             menuEl.append(menuRowEl);
         }
@@ -235,44 +230,17 @@ const ShowMenu = menu => {
 }
 
 //get resturant by name API
-const GetResturantByNameAPI = (restaurant_name, zip,cuisine, lat, lng) => {
-   
-    if (zip) {
-        //run here if zip code is entered
-        console.log(restaurant_name, zip, cuisine, lat, lng);
-        var requestUrl = "https://api.documenu.com/v2/restaurants/search/fields?zip_code=" + zip + "&exact=false";
-        if (restaurant_name) { requestUrl += "&restaurant_name=" + restaurant_name; };
-        if (cuisine) { requestUrl = requestUrl + "&cuisine=" + cuisine; };
-        console.log(requestUrl);
-        GetRestaurants(requestUrl);
-    }
-    else {
-        //getting zip code from lat & lng to help to filter near by location
-        fetch("https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=" + lat + "&longitude=" + lng + "&localityLanguage=en")
-        .then(response => {
-            return response.json();
-        }).then(data => {
-            console.log(restaurant_name, zip);
-           GetResturantAPI (restaurant_name, data.postcode,cuisine);
-        })
-        .catch(err => {
-            console.error(err);
-        });
-    }
-    
-    const GetResturantAPI = (restaurant_name, zip,cuisine) => {
-        var requestUrl = "https://api.documenu.com/v2/restaurants/search/fields?zip_code=" + zip + "&exact=false";
-        if (restaurant_name) { requestUrl += "&restaurant_name=" + restaurant_name; };
-        if (cuisine) { requestUrl = requestUrl + "&cuisine=" + cuisine; };
-        console.log(requestUrl);
-        GetRestaurants(requestUrl);
-    }
+const GetResturantByNameAPI = (restaurant_name, zip, cuisine) => {
+    var requestUrl = "https://api.documenu.com/v2/restaurants/search/fields?zip_code=" + zip + "&exact=false";
+    if (restaurant_name) { requestUrl += "&restaurant_name=" + restaurant_name; };
+    if (cuisine) { requestUrl = requestUrl + "&cuisine=" + cuisine; };
+    GetRestaurants(requestUrl);
 };
 
 //get resturant by Geo API
 const GetResturantByGeoAPI = (lat, lng, distance, cuisine) => {
     //Build the request Url for the rapid restaurant search api.
-    var requestUrl = "https://documenu.p.rapidapi.com/restaurants/search/geo?lat=" + lat + "&lon=" + lng + "&size=10&page=1";
+    var requestUrl = "https://documenu.p.rapidapi.com/restaurants/search/geo?lat=" + lat + "&lon=" + lng + "&size=15&page=1";
 
     //If the user select the distance in the user's form, we filter based on the distance selected.
     if (distance) {
@@ -282,9 +250,23 @@ const GetResturantByGeoAPI = (lat, lng, distance, cuisine) => {
     if (cuisine) {
         requestUrl = requestUrl + "&cuisine=" + cuisine;
     }
-    console.log(requestUrl);
     GetRestaurants(requestUrl);
 }
 
 //Add event listener on the user's form.
 formEl.addEventListener('submit', formSubmitHandler);
+
+searchby.addEventListener("change", function() {
+    //Clear restaurant data.
+    ResetRestaurantInfo();
+    ResetRestaurantDetailsSection();
+    ResetMenuItemsTable();
+
+    if (searchby.value === "zipcode") {
+        $("#bylocation").hide();
+        $("#byzipcode").show();
+    } else {
+        $("#bylocation").show();
+        $("#byzipcode").hide();
+    }
+});
