@@ -1,4 +1,5 @@
 /* Always set the map height explicitly to define the size of the div element that contains the map. */
+
 #page-container {
     position: relative;
     min-height: 100vh;
@@ -8,7 +9,9 @@
     padding-bottom: 70px;
 }
 
-
+#user-form {
+    display: flex;
+}
 
 #map {
     height: 500px;
@@ -18,8 +21,7 @@
 header {
     background-image: url(../../assets/images/header-background.jpg);
     background-size: cover;
-    background-position:right;
-
+    background-position: right;
 }
 
 footer {
@@ -44,4 +46,21 @@ footer {
 
 .restaurant-row:active {
     background-color: teal;
+}
+
+.btn {
+    margin-left: 20px;
+}
+
+#search,
+#results {
+    margin: 20px;
+}
+
+#menu-details {
+    margin-top: 20px;
+}
+
+#restaurant-details {
+    padding-bottom: 10px;
 }
