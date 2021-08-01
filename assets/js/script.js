@@ -16,6 +16,11 @@ var menuEl = $('#menuitem-details')
 var searchby = document.getElementById("searchby");
 $("#byzipcode").hide();
 
+var lastCuisineSearch = localStorage.getItem("cuisine");
+if (lastCuisineSearch !== null) {
+    document.querySelector('#cuisine').value = lastCuisineSearch;
+}
+
 var userCurrentPosition = {
     lat: 0,
     lng: 0
@@ -65,6 +70,7 @@ const formSubmitHandler = event => {
     var distance = document.querySelector('#distance').value;
     var restaurantName = document.querySelector('#restaurant-name').value;
     var zip = document.querySelector('#zip').value;
+    localStorage.setItem("cuisine", cuisine);
 
     if (searchby.value === "zipcode") {
         console.log("GetResturantByNameAPI");
