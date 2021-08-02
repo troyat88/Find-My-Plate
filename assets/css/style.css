@@ -9,10 +9,6 @@
     padding-bottom: 70px;
 }
 
-#user-form {
-    display: flex;
-}
-
 #map {
     height: 500px;
     width: 100%;
@@ -63,4 +59,9 @@ footer {
 
 #restaurant-details {
     padding-bottom: 10px;
+}
+
+label, input{
+ width: auto;
+ display: block;
 }
