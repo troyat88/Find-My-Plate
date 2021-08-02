@@ -22,34 +22,42 @@
 
             <!--search section-->
             <section id="search">
-                <div class="w3-container w3-pale-yellow">
+                <div class="w3-row w3-pale-yellow">
                     <form id="user-form">
-                        <label for="searchby">Search By:</label>
-                        <select id="searchby" name="searchby">
-                    <option value="userlocation">User Location</option>
-                    <option value="zipcode">Zip Code</option>
-                </select>
-                        <div class="w3-container" id="byzipcode">
-                            <label class="form-label" for="zip">Zip Code(required):</label>
-                            <input name="zip" id="zip" type="text" autofocus="true" class="form-input" />
-                            <label class="form-label" for="restaurant-name">Restaurant Name(optional):</label>
-                            <input name="restaurant-name" id="restaurant-name" type="text" autofocus="true" class="form-input" />
-                        </div>
-                        <div class="w3-container" id="bylocation">
-                            <label for="distance">Choose distance:</label>
-                            <select id="distance" name="distance">
-                        <option value="5">5 miles</option>
-                        <option value="10">10 miles</option>
-                        <option value="15">15 miles</option>
-                    </select>
-                        </div>
-                        <label class="form-label" for="cuisine">Cuisine(optional):</label>
-                        <input name="cuisine" id="cuisine" type="text" autofocus="true" class="form-input" placeholder="italian, chinese etc..." />
-                        <button type="submit" class="btn w3-round-large w3-teal">Search</button>
+                                <div class="w3-col l2">
+                                    <label for="searchby">Search By:</label>
+                                    <select id="searchby" name="searchby">
+                                        <option value="userlocation">User Location</option>
+                                        <option value="zipcode">Zip Code</option>
+                                    </select>
+                                </div>
+                                <div class="w3-col l2" id="byzipcode">
+                                    <label class="form-label" for="zip">Zip Code(required):</label>
+                                    <input name="zip" id="zip" type="text" autofocus="true" class="form-input" />
+                                </div>
+                                <div class="w3-col l3">
+                                    <label class="form-label" for="restaurant-name">Restaurant Name(optional):</label>
+                                    <input name="restaurant-name" id="restaurant-name" type="text" autofocus="true" class="form-input" />
+                                </div>
+                                <div class="w3-col l3" id="bylocation">
+                                    <label for="distance">Choose distance:</label>
+                                    <select id="distance" name="distance">
+                                        <option value="5">5 miles</option>
+                                        <option value="10">10 miles</option>
+                                        <option value="15">15 miles</option>
+                                    </select>
+                                </div>
+                                <div class="w3-col l3" id="bylocation">
+                                    <label class="form-label" for="cuisine">Cuisine(optional):</label>
+                                    <input name="cuisine" id="cuisine" type="text" autofocus="true" class="form-input" placeholder="italian, chinese etc..." />
+                                </div>
+                                <div class="w3-col w3-rest w3-right">
+                                    <button type="submit" class="btn w3-round-large w3-teal">Search</button>
+                                </div>
                     </form>
                 </div>
             </section>
-
+            
             <!--results section-->
             <section id="results">
                 <!--restaurant list-->
