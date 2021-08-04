@@ -27,12 +27,12 @@ As a diner, I want to be able to find restaurant options near me or somewhere I 
 
 ### Acceptance Criteria
 Given a site with inputs for location, distance and cuisine: 
-WHEN I search for my current location and specify a distance from, THEN I am presented with restaurant's within specified vicinity
-WHEN I select a restaurant, THEN I am presented with a restaurants details (address, website, phone) a menu, and the option to view its location on Google Maps
-WHEN I type a menu item in the menu-search, THEN I am presented with all items that contain what I typed
-WHEN I select "View-Map" for a restaurant, THEN I am presented with the location of the restaurant on Google-Maps
-WHEN I search by zip code, THEN I am presented with optional forms to search by restaurant name or cuisine
-WHEN I search by restaurant name or cuisine, THEN I am presented with all options within that zip code
+1. WHEN I search for my current location and specify a distance from, THEN I am presented with restaurant's within specified vicinity
+2. WHEN I select a restaurant, THEN I am presented with a restaurants details (address, website, phone) a menu, and the option to view its location on Google Maps
+3. WHEN I type a menu item in the menu-search, THEN I am presented with all items that contain what I typed
+4. WHEN I select "View-Map" for a restaurant, THEN I am presented with the location of the restaurant on Google-Maps
+5. WHEN I search by zip code, THEN I am presented with optional forms to search by restaurant name or cuisine
+6. WHEN I search by restaurant name or cuisine, THEN I am presented with all options within that zip code
 
 ## Process
 1. Get access to DocuMenu and Google Maps API 
